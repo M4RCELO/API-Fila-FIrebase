@@ -20,6 +20,6 @@ class RepositoryEmAtendimento:
             data
         )
 
-    def read_em_atendimento(self,codigo_medico, dia_mes):
-        return self.Firebase.get(codigo_medico + '/' + dia_mes, "em_atendimento")
+    def read_em_atendimento(self,contexto):
+        return self.Firebase.get(contexto.codigo_medico + '/' + contexto.dia_mes_ano, "em_atendimento")
 

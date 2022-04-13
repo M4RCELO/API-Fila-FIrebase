@@ -43,3 +43,15 @@ class Repository:
         )
 
         self.posicao_fila.posicao_no_update(self.firebase, contexto_insert, horario.total_seconds())
+
+    def read_posicao_fila(self, contexto):
+        paciente = self.firebase.get(contexto.codigo_medico + '/' + contexto.dia_mes_ano + '/' +
+                                     "pacientes/", contexto.codigo_paciente)
+
+        return {'posicao': paciente['posicao']}
+
+    def delete_paciente_fila(self, contexto):
+        self.firebase.delete(contexto.codigo_medico + '/' + contexto.dia_mes_ano + '/' +
+                             "pacientes/" + contexto.codigo_paciente, None)
+
+        self.posicao_fila.posicao_apos_delete(self.firebase,contexto)

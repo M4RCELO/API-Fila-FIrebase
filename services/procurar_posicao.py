@@ -57,7 +57,7 @@ class PosicaoFila:
             dict_para_ordenar[i] = dict_pacientes_atualizado[i]['horario']
 
         for i in sorted(dict_para_ordenar.items(), key = lambda kv:(kv[1], kv[0])):
-            
+
             posicao+=1
 
             if posicao!=dict_pacientes[i[0]]['posicao']:
@@ -67,5 +67,30 @@ class PosicaoFila:
 
                 firebase.patch(
                     str(contexto_insert.codigo_medico) + '/' + contexto_insert.dia_mes_ano + '/pacientes/' + i[0],
+                    data
+                )
+
+    def posicao_apos_delete(self,firebase,contexto):
+
+        posicao = 0
+        dict_pacientes = firebase.get(str(contexto.codigo_medico) + '/' + contexto.dia_mes_ano,
+                                      "pacientes")
+
+        dict_para_ordenar = {}
+
+        for i in dict_pacientes:
+            dict_para_ordenar[i] = dict_pacientes[i]['horario']
+
+        for i in sorted(dict_para_ordenar.items(), key = lambda kv:(kv[1], kv[0])):
+
+            posicao+=1
+
+            if posicao != dict_pacientes[i[0]]['posicao']:
+                data = {
+                    'posicao': posicao,
+                }
+
+                firebase.patch(
+                    str(contexto.codigo_medico) + '/' + contexto.dia_mes_ano + '/pacientes/' + i[0],
                     data
                 )

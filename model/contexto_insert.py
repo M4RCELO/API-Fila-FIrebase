@@ -1,4 +1,4 @@
-class ContextoInsert:
+class Contexto:
 
     def __init__(self,codigo_medico, dia_mes_ano, codigo_paciente, hora, minuto):
 
