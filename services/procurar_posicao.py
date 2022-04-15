@@ -1,14 +1,14 @@
-import json
+class PosicaoFila(object):
 
+    def __init__(self,firebase):
+        self.firebase = firebase
 
-class PosicaoFila:
-
-    def posicao_no_insert(self, firebase, contexto_insert, horario):
+    def posicao_no_insert(self, contexto_insert, horario):
 
         maior_posicao_fila = 0
         posicao_fila = []
 
-        dict_pacientes = firebase.get(str(contexto_insert.codigo_medico) + '/' + contexto_insert.dia_mes_ano,
+        dict_pacientes = self.firebase.get(str(contexto_insert.codigo_medico) + '/' + contexto_insert.dia_mes_ano,
                                       "pacientes")
 
         if dict_pacientes != None:
@@ -27,7 +27,7 @@ class PosicaoFila:
                         'posicao': posicao_paciente + 1,
                     }
 
-                    firebase.patch(
+                    self.firebase.patch(
                         str(contexto_insert.codigo_medico) + '/' + contexto_insert.dia_mes_ano + '/pacientes/' + i,
                         data
                     )
@@ -40,10 +40,10 @@ class PosicaoFila:
         else:
             return 1
 
-    def posicao_no_update(self, firebase, contexto_insert, horario):
+    def posicao_no_update(self, contexto_insert, horario):
 
         posicao = 0
-        dict_pacientes = firebase.get(str(contexto_insert.codigo_medico) + '/' + contexto_insert.dia_mes_ano,
+        dict_pacientes = self.firebase.get(str(contexto_insert.codigo_medico) + '/' + contexto_insert.dia_mes_ano,
                                       "pacientes")
 
         codigo_paciente = str(contexto_insert.codigo_paciente)
@@ -65,15 +65,15 @@ class PosicaoFila:
                     'posicao': posicao,
                 }
 
-                firebase.patch(
+                self.firebase.patch(
                     str(contexto_insert.codigo_medico) + '/' + contexto_insert.dia_mes_ano + '/pacientes/' + i[0],
                     data
                 )
 
-    def posicao_apos_delete(self,firebase,contexto):
+    def posicao_apos_desmarcar(self, contexto):
 
         posicao = 0
-        dict_pacientes = firebase.get(str(contexto.codigo_medico) + '/' + contexto.dia_mes_ano,
+        dict_pacientes = self.firebase.get(str(contexto.codigo_medico) + '/' + contexto.dia_mes_ano,
                                       "pacientes")
 
         dict_para_ordenar = {}
@@ -90,7 +90,7 @@ class PosicaoFila:
                     'posicao': posicao,
                 }
 
-                firebase.patch(
+                self.firebase.patch(
                     str(contexto.codigo_medico) + '/' + contexto.dia_mes_ano + '/pacientes/' + i[0],
                     data
                 )

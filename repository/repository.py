@@ -1,22 +1,22 @@
 from datetime import timedelta
 
-from banco_dados.banco_dados_singleton import BancoDadosSingleton
+from banco_dados.realtime_database_singleton import RealtimeDatabaseSingleton
 from services.procurar_posicao import PosicaoFila
 
 
 class Repository:
 
     def __init__(self):
-        self.banco_dados = BancoDadosSingleton.instance()
-        self.firebase = self.banco_dados.firebase
-        self.posicao_fila = PosicaoFila()
+        self.firebase= RealtimeDatabaseSingleton.instance().firebase
+        self.posicao_fila = PosicaoFila(self.firebase)
 
     def inserir(self, contexto_insert):
         horario = timedelta(hours=contexto_insert.hora, minutes=contexto_insert.minuto)
 
         data = {
-            'posicao': self.posicao_fila.posicao_no_insert(self.firebase, contexto_insert, horario.total_seconds()),
-            'horario': horario
+            'atendido': False,
+            'horario': horario,
+            'posicao': self.posicao_fila.posicao_no_insert(contexto_insert, horario.total_seconds())
         }
 
         self.firebase.patch(
@@ -42,7 +42,7 @@ class Repository:
             data
         )
 
-        self.posicao_fila.posicao_no_update(self.firebase, contexto_insert, horario.total_seconds())
+        self.posicao_fila.posicao_no_update(contexto_insert, horario.total_seconds())
 
     def read_posicao_fila(self, contexto):
         paciente = self.firebase.get(contexto.codigo_medico + '/' + contexto.dia_mes_ano + '/' +
@@ -50,8 +50,8 @@ class Repository:
 
         return {'posicao': paciente['posicao']}
 
-    def delete_paciente_fila(self, contexto):
+    def desmarcar_paciente_fila(self, contexto):
         self.firebase.delete(contexto.codigo_medico + '/' + contexto.dia_mes_ano + '/' +
                              "pacientes/" + contexto.codigo_paciente, None)
 
-        self.posicao_fila.posicao_apos_delete(self.firebase,contexto)
+        self.posicao_fila.posicao_apos_desmarcar(contexto)

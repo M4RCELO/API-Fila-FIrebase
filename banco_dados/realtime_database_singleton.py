@@ -1,11 +1,12 @@
 from firebase import firebase
 
-class BancoDadosSingleton:
 
+class RealtimeDatabaseSingleton:
     _instance = None
 
     def __init__(self):
         self.firebase = firebase.FirebaseApplication("https://central-care-a0c23-default-rtdb.firebaseio.com/", None)
+
     @classmethod
     def instance(cls):
         if cls._instance is None:

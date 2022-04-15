@@ -1,19 +1,19 @@
-from flow.crud_fila.delete_paciente_fila import DeletePacienteNaFilaFlow
-from flow.crud_fila.inserir_paciente_fila import InserirPacienteNaFilaFlow
+from flow.fila.delete_paciente_fila import DesmarcarPacienteNaFilaFlow
+from flow.fila.inserir_paciente_fila import InserirPacienteNaFilaFlow
 from flask import request
 
-from flow.crud_fila.read_posicao_fila import ReadPosicaoNaFilaFlow
-from flow.crud_fila.update_horario_paciente_fila import UpdateHorarioPacienteNaFilaFlow
+from flow.fila.read_posicao_fila import ReadPosicaoNaFilaFlow
+from flow.fila.update_horario_paciente_fila import UpdateHorarioPacienteNaFilaFlow
 from model.contexto_insert import Contexto
 
 
-class CrudFila:
+class CrudFilaController:
 
     def __init__(self):
         self.inserir_na_fila = InserirPacienteNaFilaFlow()
         self.update_na_fila = UpdateHorarioPacienteNaFilaFlow()
         self.read_posicao_na_fila = ReadPosicaoNaFilaFlow()
-        self.delete_paciente_na_fila = DeletePacienteNaFilaFlow()
+        self.desmarcar_paciente_na_fila = DesmarcarPacienteNaFilaFlow()
 
     def inserir_fila(self):
         request_data = request.get_json()
@@ -50,7 +50,7 @@ class CrudFila:
 
         return self.read_posicao_na_fila.posicao_fila(contexto)
 
-    def delete_paciente_fila(self):
+    def desmarcar_paciente_fila(self):
         request_data = request.get_json()
         contexto_delete = Contexto(
             codigo_medico=request_data['codigo_medico'],
@@ -60,6 +60,6 @@ class CrudFila:
             minuto=None
         )
 
-        self.delete_paciente_na_fila.delete_paciente(contexto_delete)
+        self.desmarcar_paciente_na_fila.desmarcar_paciente(contexto_delete)
 
         return "OK"
