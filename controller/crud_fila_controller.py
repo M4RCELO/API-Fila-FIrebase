@@ -19,10 +19,10 @@ class CrudFilaController:
         request_data = request.get_json()
         contexto_insert = Contexto(
             codigo_medico=request_data['codigo_medico'],
-            minuto=request_data['minuto'],
             dia_mes_ano=request_data['dia_mes_ano'],
             codigo_paciente=request_data['codigo_paciente'],
-            hora=request_data['hora']
+            hora=request_data['hora'],
+            minuto=request_data['minuto']
         )
         self.inserir_na_fila.inserir(contexto_insert)
         return "OK"

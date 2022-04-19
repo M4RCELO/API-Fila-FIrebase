@@ -8,7 +8,7 @@ from model.contexto_paciente_atendido import ContextoPacienteAtendido
 from model.contexto_update_atendimento import ContextoUpdateAtendimento
 
 
-class CrudEmAtendimentoController:
+class AtendimentoController:
 
     def __init__(self):
         self.update_atendimento = UpdateEmAtendimentoFlow()
@@ -20,7 +20,7 @@ class CrudEmAtendimentoController:
         contexto_update_em_atendimento = ContextoUpdateAtendimento(
             codigo_medico=request_data['codigo_medico'],
             dia_mes_ano=request_data['dia_mes_ano'],
-            em_atendimento=request_data['atendimento']
+            em_atendimento=request_data['em_atendimento']
         )
         self.update_atendimento.update(contexto_update_em_atendimento=contexto_update_em_atendimento)
         return "OK"
