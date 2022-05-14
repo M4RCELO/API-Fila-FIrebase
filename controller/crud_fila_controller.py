@@ -6,6 +6,8 @@ from flow.fila.read_posicao_fila import ReadPosicaoNaFilaFlow
 from flow.fila.update_horario_paciente_fila import UpdateHorarioPacienteNaFilaFlow
 from model.contexto_insert import Contexto
 
+import json
+
 
 class CrudFilaController:
 
@@ -17,12 +19,13 @@ class CrudFilaController:
 
     def inserir_fila(self):
         request_data = request.get_json()
+
         contexto_insert = Contexto(
-            codigo_medico=request_data['codigo_medico'],
-            dia_mes_ano=request_data['dia_mes_ano'],
-            codigo_paciente=request_data['codigo_paciente'],
-            hora=request_data['hora'],
-            minuto=request_data['minuto']
+            codigo_medico=request_data["codigo_medico"],
+            dia_mes_ano=request_data["dia_mes_ano"],
+            codigo_paciente=request_data["codigo_paciente"],
+            hora=request_data["hora"],
+            minuto=request_data["minuto"]
         )
         self.inserir_na_fila.inserir(contexto_insert)
         return "OK"

@@ -17,7 +17,6 @@ app.add_url_rule('/fila/delete', view_func=crud.desmarcar_paciente_fila, methods
 app.add_url_rule('/atendimento/update', view_func=atendimento.update_em_atendimento, methods=['PUT'])
 app.add_url_rule('/atendimento/update/paciente-atendido', view_func=atendimento.update_paciente_atendido, methods=['PUT'])
 app.add_url_rule('/atendimento/read/<string:codigo_medico>/<string:dia_mes_ano>', view_func=atendimento.read_paciente_em_atendimento, methods=['GET'])
-#atendimento/read/paciente-atendido/<string:codigo_medico>/<string:dia_mes_ano>/<string:codigo_paciente>
 
 app.add_url_rule('/horarios-disponiveis-medico/<string:codigo_medico>/<string:dia_mes_ano>', view_func=horarios_disponiveis_medico.horarios_disponiveis, methods=['GET'])
 

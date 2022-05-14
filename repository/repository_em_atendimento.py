@@ -53,7 +53,7 @@ class RepositoryEmAtendimento:
         contexto_update_atendimento = ContextoUpdateAtendimento(
             codigo_medico=contexto_paciente_atendido.codigo_medico,
             dia_mes_ano=contexto_paciente_atendido.dia_mes_ano,
-            em_atendimento=min(proximo_paciente)
+            em_atendimento=min(proximo_paciente) if len(proximo_paciente)>0 else 0
         )
 
         self.update_em_atendimento(contexto_update_atendimento)

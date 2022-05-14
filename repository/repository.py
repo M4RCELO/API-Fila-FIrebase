@@ -48,7 +48,7 @@ class Repository:
         paciente = self.firebase.get(contexto.codigo_medico + '/' + contexto.dia_mes_ano + '/' +
                                      "pacientes/", contexto.codigo_paciente)
 
-        return {'posicao': paciente['posicao']}
+        return paciente
 
     def desmarcar_paciente_fila(self, contexto):
         self.firebase.delete(contexto.codigo_medico + '/' + contexto.dia_mes_ano + '/' +

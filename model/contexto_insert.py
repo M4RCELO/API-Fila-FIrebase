@@ -7,4 +7,3 @@ class Contexto:
         self.codigo_paciente = codigo_paciente
         self.hora = hora
         self.minuto = minuto
-

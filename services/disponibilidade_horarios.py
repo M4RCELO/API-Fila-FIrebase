@@ -11,26 +11,13 @@ class HorariosDisponiveisMedico:
 
     def horarios_disponiveis(self, contexto):
 
-        doc_ref = self.db.collection('funcionarios').document('medicos').collections()
+        doc_ref = self.db.collection('funcionarios').document(contexto.codigo_medico).collection('atendimentos').document(contexto.dia_mes_ano)
         dict_pacientes = self.firebase.get(str(contexto.codigo_medico) + '/' + contexto.dia_mes_ano,
                                            "pacientes")
 
-        dict_horarios = {}
         dict_horarios_disponiveis = {'horarios_disponiveis': []}
 
-        for collection in doc_ref:
-            if collection.id == contexto.codigo_medico:
-
-                horarios = self.db.collection('funcionarios'). \
-                    document('medicos'). \
-                    collection(contexto.codigo_medico). \
-                    document('atendimentos'). \
-                    collection(contexto.dia_mes_ano).stream()
-
-                for i in horarios:
-                    dict_horarios = i.to_dict()
-
-                break
+        dict_horarios = doc_ref.get().to_dict()
 
         utils_time = UtilsTime()
 
@@ -43,12 +30,17 @@ class HorariosDisponiveisMedico:
         intervalo = (0, intervalo_minutos)
 
         for hora in utils_time.gerador_de_horarios(inicio, fim, intervalo):
-            hora_str = str(hora).split(":")
-            dict_horarios_disponiveis['horarios_disponiveis'].append(hora_str[0] + ":" + hora_str[1])
+            hora_split = str(hora).split(":")
+            hora_str = hora_split[0] + ":" + hora_split[1]
+            if hora_str not in dict_horarios['horarios_indisponiveis']:
+                dict_horarios_disponiveis['horarios_disponiveis'].append(hora_str)
 
-        for i in dict_pacientes:
-            horario_paciente = utils_time.conversor_segundos_horas(dict_pacientes[i]['horario'])
-            if horario_paciente in dict_horarios_disponiveis['horarios_disponiveis']:
-                dict_horarios_disponiveis['horarios_disponiveis'].remove(horario_paciente)
+        if dict_pacientes!=None:
+
+            for i in dict_pacientes:
+                horario_paciente = utils_time.conversor_segundos_horas(dict_pacientes[i]['horario'])
+                if horario_paciente in dict_horarios_disponiveis['horarios_disponiveis']:
+                    dict_horarios_disponiveis['horarios_disponiveis'].remove(horario_paciente)
+
 
         return dict_horarios_disponiveis
