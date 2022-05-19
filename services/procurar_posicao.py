@@ -78,19 +78,21 @@ class PosicaoFila(object):
 
         dict_para_ordenar = {}
 
-        for i in dict_pacientes:
-            dict_para_ordenar[i] = dict_pacientes[i]['horario']
+        if dict_pacientes!=None:
 
-        for i in sorted(dict_para_ordenar.items(), key = lambda kv:(kv[1], kv[0])):
+            for i in dict_pacientes:
+                dict_para_ordenar[i] = dict_pacientes[i]['horario']
 
-            posicao+=1
+            for i in sorted(dict_para_ordenar.items(), key = lambda kv:(kv[1], kv[0])):
 
-            if posicao != dict_pacientes[i[0]]['posicao']:
-                data = {
-                    'posicao': posicao,
-                }
+                posicao+=1
 
-                self.firebase.patch(
-                    str(contexto.codigo_medico) + '/' + contexto.dia_mes_ano + '/pacientes/' + i[0],
-                    data
-                )
+                if posicao != dict_pacientes[i[0]]['posicao']:
+                    data = {
+                        'posicao': posicao,
+                    }
+
+                    self.firebase.patch(
+                        str(contexto.codigo_medico) + '/' + contexto.dia_mes_ano + '/pacientes/' + i[0],
+                        data
+                    )

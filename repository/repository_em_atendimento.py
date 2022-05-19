@@ -1,3 +1,4 @@
+from banco_dados.firestore_database_singleton import FirestoreDatabaseSingleton
 from banco_dados.realtime_database_singleton import RealtimeDatabaseSingleton
 from model.contexto_update_atendimento import ContextoUpdateAtendimento
 
@@ -6,6 +7,7 @@ class RepositoryEmAtendimento:
 
     def __init__(self):
         self.firebase= RealtimeDatabaseSingleton.instance().firebase
+        self.db = FirestoreDatabaseSingleton.instance().db
 
     def update_em_atendimento(self,contexto_update_atendimento):
 
@@ -46,14 +48,26 @@ class RepositoryEmAtendimento:
                 )
 
             if not dict_pacientes[i]['atendido'] and dict_pacientes[i]['posicao'] >= contexto_paciente_atendido.posicao_paciente_atendido+1:
-
                 proximo_paciente.append(dict_pacientes[i]['posicao'])
 
+        if len(proximo_paciente) > 0:
+            contexto_update_atendimento = ContextoUpdateAtendimento(
+                codigo_medico=contexto_paciente_atendido.codigo_medico,
+                dia_mes_ano=contexto_paciente_atendido.dia_mes_ano,
+                em_atendimento=min(proximo_paciente)
+            )
 
-        contexto_update_atendimento = ContextoUpdateAtendimento(
-            codigo_medico=contexto_paciente_atendido.codigo_medico,
-            dia_mes_ano=contexto_paciente_atendido.dia_mes_ano,
-            em_atendimento=min(proximo_paciente) if len(proximo_paciente)>0 else 0
-        )
+            self.update_em_atendimento(contexto_update_atendimento)
+            self.db.collection('fila').document(contexto_paciente_atendido.codigo_medico+contexto_paciente_atendido.dia_mes_ano).update({'paciente':min(proximo_paciente)})
 
-        self.update_em_atendimento(contexto_update_atendimento)
+        else:
+            contexto_update_atendimento = ContextoUpdateAtendimento(
+                codigo_medico=contexto_paciente_atendido.codigo_medico,
+                dia_mes_ano=contexto_paciente_atendido.dia_mes_ano,
+                em_atendimento=contexto_paciente_atendido.posicao_paciente_atendido
+            )
+
+            self.update_em_atendimento(contexto_update_atendimento)
+            self.db.collection('fila').document(contexto_paciente_atendido.codigo_medico+contexto_paciente_atendido.dia_mes_ano).update({'concluido': True})
+
+
