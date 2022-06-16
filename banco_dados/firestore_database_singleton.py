@@ -7,7 +7,7 @@ class FirestoreDatabaseSingleton:
     _instance = None
 
     def __init__(self):
-        self._cred = credentials.Certificate('./ServiceAccountKey.json')
+        self._cred = credentials.Certificate('C:/Users/marce/Desktop/Codigos/Python/apiFirebaseFila/ServiceAccountKey.json')
         firebase_admin.initialize_app(self._cred)
 
         self.db = firestore.client()

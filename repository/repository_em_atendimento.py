@@ -9,6 +9,14 @@ class RepositoryEmAtendimento:
         self.firebase= RealtimeDatabaseSingleton.instance().firebase
         self.db = FirestoreDatabaseSingleton.instance().db
 
+    def inserir_atendimento(self,contexto):
+
+        self.firebase.patch(
+            str(contexto.codigo_medico) + '/' +
+            str(contexto.dia_mes_ano) + '/',
+            {'em_atendimento': {'paciente': 0}}
+        )
+
     def update_em_atendimento(self,contexto_update_atendimento):
 
         data = {

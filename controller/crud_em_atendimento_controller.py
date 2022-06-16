@@ -1,5 +1,6 @@
 from flask import request
 
+from flow.atendimento.inserir_atendimento import InserirAtendimentoFlow
 from flow.atendimento.read_paciente_em_atendimento import ReadPacienteEmAtendimentoFlow
 from flow.atendimento.update_atendido import UpdatePacienteAtendidoFlow
 from flow.atendimento.update_em_atendimento import UpdateEmAtendimentoFlow
@@ -14,6 +15,19 @@ class AtendimentoController:
         self.update_atendimento = UpdateEmAtendimentoFlow()
         self.read_paciente_atendimento = ReadPacienteEmAtendimentoFlow()
         self.update_atendido = UpdatePacienteAtendidoFlow()
+        self.inserir_atendimento = InserirAtendimentoFlow()
+
+    def inserir_em_atendimento(self):
+        request_data = request.get_json()
+        contexto_inserir_atendimento = Contexto(
+            codigo_medico=request_data['codigo_medico'],
+            dia_mes_ano=request_data['dia_mes_ano'],
+            minuto=None,
+            codigo_paciente=None,
+            hora=None
+        )
+        self.inserir_atendimento.inserir(contexto_inserir_atendimento=contexto_inserir_atendimento)
+        return "OK"
 
     def update_em_atendimento(self):
         request_data = request.get_json()
